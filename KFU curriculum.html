@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KFU Curriculum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0f1b30;
+    --ink-soft:#3d4863;
+    --paper:#f7f4ec;
+    --paper-raised:#ffffff;
+    --gold:#c6961f;
+    --gold-soft:#f0dfa8;
+    --teal:#2f7268;
+    --teal-soft:#d3e9e3;
+    --danger:#c1442a;
+    --danger-soft:#f7ddd0;
+    --line:#d9d0ba;
+  }
+  *{box-sizing:border-box;}
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans Arabic', 'Segoe UI', Roboto, 'Noto Sans Arabic', sans-serif;
+    padding-bottom:60px;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+  }
+  h1,h2,h3,.display{font-family:'Cairo', 'Segoe UI', Roboto, sans-serif;}
+
+  /* ===== Header / road ===== */
+  .hero{
+    background:linear-gradient(160deg, var(--ink) 0%, #1c3050 55%, #24405f 100%);
+    color:#f5f2ea;
+    padding:28px 20px 22px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 6px 24px rgba(15,27,48,.35);
+  }
+  .hero::after{
+    content:"";
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 85% -10%, rgba(179,135,43,.35), transparent 55%);
+    pointer-events:none;
+  }
+  .hero-top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; position:relative;}
+  .eyebrow{font-size:12px; letter-spacing:.08em; color:var(--gold-soft); font-weight:600; margin:0 0 4px;}
+  h1{font-size:22px; margin:0; font-weight:900;}
+  .subtitle{font-size:13px; color:#c7cede; margin-top:4px;}
+  .hours-badge{
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:14px;
+    padding:9px 14px;
+    text-align:center;
+    min-width:88px;
+    box-shadow:0 3px 12px rgba(0,0,0,.18);
+  }
+  .hours-badge .num{font-family:'Cairo'; font-size:22px; font-weight:900; color:var(--gold-soft); line-height:1;}
+  .hours-badge .lbl{font-size:10px; color:#c7cede; margin-top:2px;}
+
+  .road{
+    margin-top:22px; position:relative;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .progress-track{
+    margin-top:20px;
+    height:8px; border-radius:6px; background:rgba(255,255,255,.12);
+    overflow:hidden; position:relative;
+  }
+  .progress-fill{
+    height:100%; width:0%; border-radius:6px;
+    background:linear-gradient(90deg, var(--teal), var(--gold));
+    transition:width .4s ease;
+  }
+  .road::before{
+    content:"";
+    position:absolute; top:9px; right:14px; left:14px; height:2px;
+    background:rgba(255,255,255,.18);
+  }
+  .road-node{position:relative; display:flex; flex-direction:column; align-items:center; gap:6px; z-index:1; flex:1;}
+  .dot{width:19px; height:19px; border-radius:50%; background:#2c3a5a; border:2px solid rgba(255,255,255,.3); transition:.3s;}
+  .dot.done{background:var(--gold); border-color:var(--gold); box-shadow:0 0 0 4px rgba(179,135,43,.25);}
+  .road-lbl{font-size:10px; color:#a9b1c9; text-align:center;}
+
+  /* ===== Pools summary strip ===== */
+  .pools-strip{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+    padding:16px 20px; max-width:1000px; margin:0 auto;
+  }
+  .pool-chip{
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:12px;
+    padding:10px 12px; text-align:center; cursor:pointer; transition:.2s;
+  }
+  .pool-chip:hover{border-color:var(--gold);}
+  .pool-chip .count{font-family:'Cairo'; font-weight:900; font-size:18px;}
+  .pool-chip .name{font-size:11px; color:var(--ink-soft); margin-top:2px;}
+  .pool-chip.complete{background:var(--teal-soft); border-color:var(--teal);}
+  .pool-chip.complete .count{color:var(--teal);}
+  .pool-chip.incomplete .count{color:var(--danger);}
+
+  /* ===== Layout ===== */
+  .wrap{max-width:1000px; margin:0 auto; padding:6px 20px;}
+  .section-title{
+    display:flex; align-items:baseline; gap:10px; margin:34px 0 12px;
+  }
+  .section-title .idx{font-family:'Cairo'; font-weight:900; font-size:13px; color:var(--gold); border:1.5px solid var(--gold); border-radius:20px; padding:2px 10px;}
+  .section-title h2{font-size:17px; margin:0;}
+  .section-title .sub{font-size:12px; color:var(--ink-soft);}
+
+  .card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    margin-bottom:14px;
+    box-shadow:0 2px 10px rgba(15,27,48,.06);
+  }
+  .card-head{
+    padding:12px 16px; font-size:13px; font-weight:600; color:var(--ink-soft);
+    border-bottom:1px solid var(--line); background:#faf8f2;
+    display:flex; justify-content:space-between;
+  }
+  .row{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    padding:11px 16px;
+    border-bottom:1px solid #eee7d6;
+    cursor:pointer;
+    transition:background .15s;
+  }
+  .row:last-child{border-bottom:none;}
+  .row:hover{background:#faf6ec;}
+  .row.checked{background:#f5f0e0;}
+  .chk{
+    width:20px; height:20px; border-radius:6px; border:2px solid #c9bd9a;
+    flex:none; display:flex; align-items:center; justify-content:center;
+    background:#fff; transition:.15s;
+  }
+  .row.checked .chk{background:var(--teal); border-color:var(--teal);}
+  .chk svg{width:12px; height:12px; opacity:0; transition:.15s;}
+  .row.checked .chk svg{opacity:1;}
+  .row-name{flex:1; font-size:14px;}
+  .row.checked .row-name{color:var(--ink-soft);}
+  .row.checked .row-name .name-text{ text-decoration:line-through; text-decoration-color:#b9ad8a; }
+  .row-code{font-size:11px; color:#9a9276; font-family:monospace; min-width:64px; text-align:left;}
+  .row-hours{font-size:12px; background:var(--gold-soft); color:#6b5217; border-radius:8px; padding:2px 8px; font-weight:600; min-width:26px; text-align:center;}
+  .grade-select{
+    font-size:11.5px; font-weight:700; border:1.5px solid var(--teal); border-radius:8px;
+    padding:3px 4px; background:var(--teal-soft); color:var(--teal); font-family:inherit;
+    cursor:pointer; flex:none;
+  }
+  .row-prereq{font-size:10px; color:#a99; min-width:70px;}
+  .gpa-disclaimer{ font-size:10.5px; color:#a9b1c9; margin-top:8px; line-height:1.6; }
+  @media (max-width:480px){
+    .row[data-training-row] .row-name{flex-basis:100%;}
+  }
+  .pool-card{border-color:var(--teal);}
+  .pool-card .card-head{background:var(--teal-soft); color:#204944;}
+  .pool-limit{font-size:12px; font-weight:700;}
+
+  .note{
+    font-size:12px; color:var(--ink-soft); background:#f3eedb; border:1px dashed var(--gold);
+    border-radius:10px; padding:10px 14px; margin:8px 0 24px; line-height:1.7;
+  }
+
+  .footer-bar{
+    max-width:1000px; margin:24px auto 0; padding:0 20px;
+    display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+  }
+  .reset-btn{
+    background:none; border:1px solid var(--danger); color:var(--danger);
+    border-radius:20px; padding:8px 18px; font-size:12px; cursor:pointer; font-family:inherit;
+  }
+  .reset-btn:hover{background:var(--danger-soft);}
+  .save-status{font-size:11px; color:var(--ink-soft);}
+  .credit-line{ text-align:center; font-size:11px; color:#b0a687; margin-top:18px; }
+  .training-note{
+    font-size:10px; color:var(--danger); background:var(--danger-soft);
+    border-radius:6px; padding:2px 8px; font-weight:600; white-space:nowrap; margin-inline-start:4px;
+  }
+  .sem-note{ font-size:9.5px; color:var(--danger); margin-top:2px; }
+  .export-btn{
+    background:var(--teal); border:1px solid var(--teal); color:#fff;
+    border-radius:20px; padding:8px 16px; font-size:12px; cursor:pointer; font-family:inherit; font-weight:600;
+  }
+  .export-btn:hover{ opacity:.9; }
+
+  /* ===== Print view (hidden on screen, shown only when printing/saving as PDF) ===== */
+  #printView{ display:none; }
+  @media print{
+    body > *:not(#printView){ display:none !important; }
+    #printView{
+      display:block !important;
+      font-family:'IBM Plex Sans Arabic', sans-serif;
+      color:#182338; padding:10px 20px;
+    }
+    #printView .p-header{ border-bottom:3px solid #b3872b; padding-bottom:12px; margin-bottom:16px; }
+    #printView .p-eyebrow{ font-size:11px; color:#2f7268; font-weight:bold; margin:0 0 4px; }
+    #printView h1{ font-size:17px; margin:0 0 4px; font-family:'Cairo', sans-serif; }
+    #printView .p-sub{ font-size:10px; color:#666; }
+    #printView .p-stats{ font-size:11px; margin-top:8px; font-weight:bold; color:#2f7268; }
+    #printView .p-section{ font-size:13px; font-weight:bold; margin:16px 0 6px; }
+    #printView .p-card{ border:1px solid #d9d0ba; border-radius:8px; margin-bottom:8px; overflow:hidden; break-inside:avoid; }
+    #printView .p-cardhead{ background:#faf6ec; padding:5px 10px; font-size:10.5px; font-weight:bold; display:flex; justify-content:space-between; border-bottom:1px solid #d9d0ba; }
+    #printView .p-cardhead.pool{ background:#d3e9e3; }
+    #printView .p-row{ display:flex; align-items:center; gap:7px; padding:4px 10px; border-bottom:1px solid #eee7d6; font-size:10.5px; }
+    #printView .p-row:last-child{ border-bottom:none; }
+    #printView .p-box{ width:11px; height:11px; border:1.3px solid #444; border-radius:3px; flex:none; text-align:center; line-height:9px; font-size:9px; }
+    #printView .p-box.done{ background:#2f7268; border-color:#2f7268; color:#fff; }
+    #printView .p-name{ flex:1; }
+    #printView .p-name.done-text{ text-decoration:line-through; color:#333333; }
+    #printView .p-code{ font-size:8.5px; color:#999; min-width:48px; text-align:left; direction:ltr; }
+    #printView .p-hours{ font-size:9px; background:#f0dfa8; border-radius:5px; padding:1px 6px; font-weight:bold; }
+    #printView .p-cols{ column-count:2; column-gap:16px; }
+    #printView .p-cols .p-card{ break-inside:avoid; }
+  }
+
+  /* ===== Search ===== */
+  .search-wrap{position:relative; margin:18px 0 4px;}
+  .search-input{
+    width:100%; padding:12px 44px 12px 16px; border-radius:12px;
+    border:1.5px solid var(--line); background:var(--paper-raised);
+    font-family:inherit; font-size:14px; color:var(--ink);
+  }
+  .search-input:focus{outline:none; border-color:var(--gold);}
+  .search-icon{position:absolute; right:14px; top:50%; transform:translateY(-50%); opacity:.5; pointer-events:none;}
+  .row.hidden-by-search{display:none;}
+
+  /* ===== Prerequisite warning ===== */
+  .prereq-warn{
+    font-size:10px; color:var(--danger); background:var(--danger-soft);
+    border-radius:6px; padding:2px 6px; font-weight:700; white-space:nowrap;
+  }
+
+  /* ===== Confetti & celebration ===== */
+  .confetti-piece{
+    position:fixed; top:-30px; z-index:1001;
+    pointer-events:none;
+    animation:confetti-fall linear forwards;
+  }
+  @keyframes confetti-fall{
+    0%{ transform:translateY(0) rotate(0deg); }
+    100%{ transform:translateY(105vh) rotate(720deg); }
+  }
+  .grad-overlay{
+    position:fixed; inset:0; z-index:1000;
+    background:rgba(24,35,56,.72);
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none;
+    transition:opacity .35s ease;
+  }
+  .grad-overlay.show{ opacity:1; pointer-events:auto; }
+  .grad-card{
+    background:var(--paper-raised);
+    border-radius:22px;
+    padding:36px 32px 28px;
+    text-align:center;
+    max-width:340px;
+    box-shadow:0 20px 60px rgba(0,0,0,.4);
+    transform:scale(.85) translateY(10px);
+    transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  }
+  .grad-overlay.show .grad-card{ transform:scale(1) translateY(0); }
+  .grad-cap{
+    font-size:64px; line-height:1;
+    display:inline-block;
+    animation:cap-bounce 1.6s ease-in-out infinite;
+  }
+  @keyframes cap-bounce{
+    0%,100%{ transform:translateY(0) rotate(-6deg); }
+    50%{ transform:translateY(-14px) rotate(6deg); }
+  }
+  .grad-title{font-family:'Cairo'; font-weight:900; font-size:22px; color:var(--ink); margin:14px 0 6px;}
+  .grad-sub{font-size:13px; color:var(--ink-soft); line-height:1.7; margin-bottom:22px;}
+  .grad-close{
+    background:linear-gradient(90deg, var(--teal), var(--gold));
+    color:#fff; border:none; border-radius:20px;
+    padding:11px 28px; font-size:14px; font-weight:700;
+    cursor:pointer; font-family:inherit;
+  }
+  .board-wrap{ margin-top:20px; overflow-x:auto; }
+  .board-node{ cursor:pointer; }
+  .board-node circle.bg{ fill:#2c3a5a; stroke:rgba(255,255,255,.3); stroke-width:2; transition:.3s; }
+  .board-node.done circle.bg{ fill:var(--gold); stroke:var(--gold); }
+  .board-node text.icon{ font-size:16px; fill:#fff; text-anchor:middle; dominant-baseline:central; }
+  .board-node text.lbl{ font-size:9px; fill:#a9b1c9; text-anchor:middle; }
+  .board-node.done text.lbl{ fill:var(--gold-soft); font-weight:700; }
+  .board-path{ fill:none; stroke:rgba(255,255,255,.25); stroke-width:3; stroke-dasharray:2 8; stroke-linecap:round; }
+  .board-path.filled{ stroke:var(--gold); stroke-dasharray:none; }
+
+  /* ===== Action buttons ===== */
+  .action-row{ display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; }
+  .action-btn{
+    flex:1; min-width:150px;
+    background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.25);
+    color:#f5f2ea; border-radius:12px; padding:11px 14px;
+    font-family:inherit; font-size:13px; font-weight:600; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    transition:.2s;
+  }
+  .action-btn:hover{ background:rgba(255,255,255,.18); }
+
+  /* ===== Share / advisor modals ===== */
+  .modal-card{
+    background:var(--paper-raised); border-radius:22px; padding:26px 24px;
+    text-align:center; max-width:400px; width:90vw;
+    box-shadow:0 20px 60px rgba(0,0,0,.4);
+    transform:scale(.9); transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+    max-height:85vh; overflow-y:auto;
+  }
+  .grad-overlay.show .modal-card{ transform:scale(1); }
+  .modal-title{ font-family:'Cairo'; font-weight:900; font-size:18px; margin:0 0 14px; }
+  .share-canvas-preview{ width:100%; border-radius:14px; margin-bottom:16px; border:1px solid var(--line); }
+  .advisor-textarea{
+    width:100%; min-height:180px; border:1px solid var(--line); border-radius:12px;
+    padding:12px; font-family:inherit; font-size:12.5px; line-height:1.8;
+    resize:vertical; color:var(--ink); background:#faf8f2; margin-bottom:14px;
+  }
+  .modal-btn-row{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .modal-btn{
+    border:none; border-radius:20px; padding:10px 20px; font-size:13px; font-weight:700;
+    cursor:pointer; font-family:inherit;
+  }
+  .modal-btn.primary{ background:linear-gradient(90deg, var(--teal), var(--gold)); color:#fff; }
+  .modal-btn.secondary{ background:#eee7d6; color:var(--ink); }
+  .modal-btn.whatsapp{ background:#25D366; color:#fff; }
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:#f5f2ea; padding:12px 20px; border-radius:12px;
+    font-size:13px; max-width:88vw; text-align:center; z-index:1002;
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+    opacity:0; transition:opacity .25s ease, transform .25s ease; pointer-events:none;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <p class="eyebrow">جامعة الملك فيصل — كلية الآداب · دفعة 2022 - 2025</p>
+      <h1>دليل الخطة الدراسية للطالبـ/ـة - تخصص اللغة الإنجليزية - دفعة 2022-2025</h1>
+      <p class="subtitle">علّم كل مقرر أنجزته — الأداة تتابع الساعات والمتطلبات الاختيارية تلقائيًا</p>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <div class="hours-badge">
+        <div class="num" id="hoursNum">0 / 137</div>
+        <div class="lbl">ساعة معتمدة</div>
+      </div>
+      <div class="hours-badge" id="pctBadge">
+        <div class="num" id="pctNum">0%</div>
+        <div class="lbl">نسبة الإنجاز</div>
+      </div>
+      <div class="hours-badge" id="semBadge">
+        <div class="num" id="semNum">8</div>
+        <div class="lbl">فصل متبقي</div>
+      </div>
+      <div class="hours-badge" id="gpaBadge">
+        <div class="num" id="gpaNum">—</div>
+        <div class="lbl">المعدل التراكمي</div>
+      </div>
+    </div>
+    <div class="gpa-disclaimer">* حساب المعدل التراكمي تقديري وليس بالضرورة أن يكون مطابقًا للمعدل الذي تمنحه الجامعة</div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="board-wrap"><svg id="boardSvg" viewBox="0 0 900 200" preserveAspectRatio="xMidYMid meet"></svg></div>
+  <div class="action-row">
+    <button class="action-btn" id="shareBtn">📤 شارك تقدمك</button>
+    <button class="action-btn" id="advisorBtn">📋 رسالة للمرشد الأكاديمي</button>
+  </div>
+</div>
+
+<div class="grad-overlay" id="shareOverlay">
+  <div class="modal-card">
+    <div class="modal-title">بطاقة إنجازك</div>
+    <img class="share-canvas-preview" id="sharePreviewImg" alt="بطاقة التقدم">
+    <div class="modal-btn-row">
+      <button class="modal-btn primary" id="downloadShareBtn">⬇️ تحميل الصورة</button>
+      <button class="modal-btn secondary" id="closeShareBtn">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<div class="grad-overlay" id="advisorOverlay">
+  <div class="modal-card">
+    <div class="modal-title">رسالة جاهزة للمرشد الأكاديمي</div>
+    <textarea class="advisor-textarea" id="advisorText" readonly></textarea>
+    <div class="modal-btn-row">
+      <button class="modal-btn primary" id="copyAdvisorBtn">📋 نسخ النص</button>
+      <button class="modal-btn whatsapp" id="waAdvisorBtn">💬 واتساب</button>
+      <button class="modal-btn secondary" id="closeAdvisorBtn">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<div class="pools-strip" id="poolsStrip"></div>
+
+<div class="wrap">
+  <div class="note">
+    ⚠️ أربعة "قوائم اختيارية" في الخطة لا تظهر بالترتيب مع بقية المقررات — وهي غالبًا سبب نسيان الطلاب لمقرر عند التخرج:
+    <b>جامعة اختياري (2 من 12)</b>، <b>كلية اختياري (1 من 7)</b>، <b>برنامج اختياري — مسار اللغويات (4 من 7)</b>، و<b>مقرر حر (1 من 2)</b>.
+    ستجدها في نهاية الصفحة بعلامة اللون الأخضر — تابع العداد بجانب كل مجموعة حتى يكتمل.
+  </div>
+
+  <div class="search-wrap">
+    <input class="search-input" id="searchBox" type="text" placeholder="ابحث عن مقرر بالاسم أو الرقم...">
+    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+  </div>
+
+  <div id="levelsContainer"></div>
+
+  <div class="section-title"><span class="idx">اختياري</span><h2>المتطلبات الاختيارية (القوائم الأربع)</h2><span class="sub">— لا تُحسب هذه ضمن أي مستوى محدد، اختر العدد المطلوب من كل قائمة</span></div>
+  <div id="poolsContainer"></div>
+
+  <div class="footer-bar">
+    <span class="save-status" id="saveStatus">يتم الحفظ تلقائيًا في هذا المتصفح</span>
+    <div style="display:flex; gap:8px;">
+      <button class="export-btn" id="exportPdfBtn">🖨️ تصدير PDF بوضعي الحالي</button>
+      <button class="reset-btn" id="resetBtn">إعادة تعيين الكل</button>
+    </div>
+  </div>
+
+  <div class="credit-line">فكرة وتصميم: أ. د. خالد الدوسري · نوف الدوسري</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div id="printView"></div>
+
+<div class="grad-overlay" id="gradOverlay">
+  <div class="grad-card">
+    <div class="grad-cap">🎓</div>
+    <div class="grad-title">مبروك التخرج!</div>
+    <div class="grad-sub">أكملت 137 ساعة من خطتك بالكامل — كل المقررات الإجبارية والاختيارية محددة. جاهز للتخرج 🎉</div>
+    <button class="grad-close" id="gradClose">الحمدلله 🎉</button>
+  </div>
+</div>
+
+<script>
+const REQUIRED = [
+ {level:1, sem:1, items:[
+   {code:'7422111', name:'اللغة العربية (1)', hours:3},
+   {code:'1700101', name:'اللغة الإنجليزية', hours:3},
+   {code:'7426111', name:'مدخل إلى علم التاريخ', hours:3},
+   {code:'7427161', name:'جغرافية المملكة العربية السعودية', hours:3},
+   {code:'7424111', name:'مبادئ علم الاجتماع', hours:3},
+ ]},
+ {level:1, sem:2, items:[
+   {code:'7423112', name:'استماع وتحدث 1', hours:3, prereq:'1700101'},
+   {code:'7423113', name:'القراءة باللغة الإنجليزية', hours:3, prereq:'1700101'},
+   {code:'7423114', name:'التركيب اللغوي 1', hours:3, prereq:'1700101'},
+   {code:'7423115', name:'الكتابة باللغة الإنجليزية', hours:3, prereq:'1700101'},
+   {code:'7425131', name:'مدخل إلى الإعلام', hours:3},
+ ]},
+ {level:2, sem:1, items:[
+   {isPoolRef:true, poolKey:'univ', name:'متطلب جامعة اختياري', hours:2},
+   {code:'7423217', name:'بناء المفردات', hours:3, prereq:'7423113'},
+   {code:'7423221', name:'استماع وتحدث 2', hours:3, prereq:'7423112'},
+   {code:'7423223', name:'التركيب اللغوي 2', hours:3, prereq:'7423114'},
+   {code:'7423224', name:'كتابة المقال', hours:3, prereq:'7423115'},
+   {code:'7423216', name:'المهارات الدراسية', hours:3, prereq:'7423114'},
+ ]},
+ {level:2, sem:2, items:[
+   {code:'1900101', name:'العقيدة والمذاهب', hours:2},
+   {code:'1901101', name:'مقدمة في الحاسب الآلي', hours:3},
+   {code:'7423231', name:'مدخل إلى اللغويات', hours:3, prereq:'7423224'},
+   {code:'7423251', name:'مقدمة في الأدب', hours:3, prereq:'7423217'},
+   {code:'7423261', name:'مقدمة في دراسات الترجمة', hours:3, prereq:'7423224'},
+   {code:'7423222', name:'القراءة النقدية', hours:3, prereq:'7423217'},
+ ]},
+ {level:3, sem:1, items:[
+   {code:'1900102', name:'الثقافة الإسلامية', hours:2},
+   {isPoolRef:true, poolKey:'college', name:'متطلب كلية اختياري', hours:3},
+   {code:'7423327', name:'الكتابة الأكاديمية', hours:3, prereq:'7423224'},
+   {code:'7423333', name:'النحو والصرف', hours:3, prereq:'7423231'},
+   {code:'7423332', name:'الصوتيات والنظام الصوتي', hours:3, prereq:'7423231'},
+   {code:'7423353', name:'أدب عصر النهضة', hours:3, prereq:'7423251'},
+ ]},
+ {level:3, sem:2, items:[
+   {isPoolRef:true, poolKey:'univ', name:'متطلب جامعة اختياري', hours:2},
+   {code:'7423343', name:'علم اللغة الاجتماعي', hours:3, prereq:'7423231'},
+   {code:'7423334', name:'علم الدلالة والبراجماتيك', hours:3},
+   {code:'7423456', name:'الرواية الحديثة', hours:3, prereq:'7423251'},
+   {code:'7423352', name:'الشعر الإنجليزي', hours:3, prereq:'7423251'},
+   {isPoolRef:true, poolKey:'program', name:'متطلب اختياري: مسار اللغويات', hours:3},
+ ]},
+ {level:4, sem:1, items:[
+   {code:'7423425', name:'حوار ومناقشة', hours:3, prereq:'7423221'},
+   {code:'7423441', name:'تعلم اللغة المعزز بالتقنية', hours:3, prereq:'7423231'},
+   {code:'7423442', name:'علم اللغة النفسي', hours:3, prereq:'7423231'},
+   {code:'7423457', name:'المسرحية الحديثة', hours:3, prereq:'7423353'},
+   {isPoolRef:true, poolKey:'free', name:'مقرر حر', hours:3},
+   {isPoolRef:true, poolKey:'program', name:'متطلب اختياري: مسار اللغويات', hours:3},
+ ]},
+ {level:4, sem:2, items:[
+   {code:'7423458', name:'تحليل الخطاب', hours:3, prereq:'7423231'},
+   {code:'7423459', name:'النقد الأدبي', hours:3, prereq:'7423457'},
+   {code:'7423481', name:'طرق البحث ومشروع التخرج', hours:3, prereq:'7423441'},
+   {code:'7423500', name:'التدريب التعاوني', hours:6, trainingNote:true},
+   {isPoolRef:true, poolKey:'program', name:'متطلب اختياري: مسار اللغويات', hours:3},
+   {isPoolRef:true, poolKey:'program', name:'متطلب اختياري: مسار اللغويات', hours:3},
+ ]},
+];
+
+const POOLS = [
+  {
+    key:'univ', title:'متطلبات الجامعة الاختيارية', need:2, hoursEach:2,
+    items:[
+      {code:'1900103', name:'الأخلاق الإسلامية وآداب المهنة'},
+      {code:'1900104', name:'دراسات في السيرة النبوية'},
+      {code:'1900105', name:'الفقه الطبي'},
+      {code:'1900106', name:'الاقتصاد والسياسة في الإسلام'},
+      {code:'1900107', name:'النظام الاجتماعي والسلوك الأسري'},
+      {code:'1900108', name:'أساسيات ريادة الأعمال'},
+      {code:'1900109', name:'صحة ولياقة'},
+      {code:'1900110', name:'مهارات البحث'},
+      {code:'1900111', name:'العمل التطوعي'},
+      {code:'1900112', name:'الدواء: النوع والاستخدام'},
+      {code:'1900113', name:'حقوق الإنسان في الإسلام'},
+      {code:'1900115', name:'أساسيات الأمن الغذائي'},
+    ]
+  },
+  {
+    key:'college', title:'متطلبات الكلية الاختيارية', need:1, hoursEach:3,
+    items:[
+      {code:'7421233', name:'التلاوة والتجويد'},
+      {code:'7422112', name:'اللغة العربية 2'},
+      {code:'7426141', name:'الحضارة الإسلامية'},
+      {code:'7420111', name:'مدخل إلى الحضارة الإنسانية'},
+      {code:'7426101', name:'تاريخ المملكة العربية السعودية'},
+      {code:'0232302', name:'مهارات التعلم والتفكير'},
+      {code:'0817131', name:'مبادئ الإحصاء'},
+    ]
+  },
+  {
+    key:'program', title:'متطلبات البرنامج الاختيارية (مسار اللغويات)', need:4, hoursEach:3,
+    items:[
+      {code:'7423326', name:'الفكر والثقافة الإنجليزية'},
+      {code:'7423354', name:'مدخل للأدب الأمريكي'},
+      {code:'7423455', name:'القصة القصيرة'},
+      {code:'7423447', name:'التحليل اللغوي المقارن'},
+      {code:'7423345', name:'اكتساب اللغة الثانية'},
+      {code:'7423448', name:'الأسلوبية'},
+      {code:'7423446', name:'التعليم والتقويم اللغوي'},
+    ]
+  },
+  {
+    key:'free', title:'المقرر الحر', need:1, hoursEach:3,
+    items:[
+      {code:'7426231', name:'تاريخ السيرة النبوية'},
+      {code:'7426477', name:'حاضر العالم الإسلامي'},
+    ]
+  },
+];
+
+const TOTAL_HOURS = 137;
+
+// Each poolRef marker only represents "take ONE elective from this list
+// during this semester" — it should NOT require the whole pool quota (e.g.
+// all 4 program electives) to be finished before this specific semester
+// counts as done. So we tag each occurrence with its position among
+// same-poolKey markers (1st, 2nd, 3rd...), and a marker is satisfied once
+// that many items from the pool have been checked, in any order.
+(function tagPoolRefOccurrences(){
+  const counters = {};
+  REQUIRED.forEach(block=>block.items.forEach(it=>{
+    if(it.isPoolRef){
+      counters[it.poolKey] = (counters[it.poolKey] || 0) + 1;
+      it.occIndex = counters[it.poolKey];
+    }
+  }));
+})();
+let state = {};
+let grades = {};
+let trainingStage = {};
+const STORE_KEY = 'kfu-eng-checklist';
+const TRAINING_CODE = '7423500';
+
+const GRADES = [
+  {letter:'A+', points:5.00},
+  {letter:'A',  points:4.75},
+  {letter:'B+', points:4.50},
+  {letter:'B',  points:4.00},
+  {letter:'C+', points:3.50},
+  {letter:'C',  points:3.00},
+  {letter:'D+', points:2.50},
+  {letter:'D',  points:2.00},
+  {letter:'F',  points:1.00},
+];
+
+function applyLoadedData(raw){
+  if(raw && raw.__v3){
+    state = raw.checked || {};
+    grades = raw.grades || {};
+    trainingStage = raw.trainingStage || {};
+  }else if(raw && raw.__v2){
+    state = raw.checked || {};
+    grades = raw.grades || {};
+    trainingStage = {};
+  }else if(raw){
+    // legacy save format from before the grade calculator existed
+    state = raw;
+    grades = {};
+    trainingStage = {};
+  }else{
+    state = {};
+    grades = {};
+    trainingStage = {};
+  }
+}
+
+async function loadState(){
+  // Try saving to the platform's storage layer first, if available
+  try{
+    if(window.storage){
+      const res = await window.storage.get(STORE_KEY, false);
+      applyLoadedData(res && res.value ? JSON.parse(res.value) : null);
+      render();
+      return;
+    }
+  }catch(e){ /* fall through to localStorage */ }
+
+  // Fallback: real browser local storage (works when file is downloaded / opened directly)
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    applyLoadedData(raw ? JSON.parse(raw) : null);
+  }catch(e){ state = {}; grades = {}; trainingStage = {}; }
+  render();
+}
+
+async function saveState(){
+  let savedSomewhere = false;
+  const payload = JSON.stringify({__v3:true, checked: state, grades: grades, trainingStage: trainingStage});
+  try{
+    if(window.storage){
+      await window.storage.set(STORE_KEY, payload, false);
+      savedSomewhere = true;
+    }
+  }catch(e){ /* ignore, try localStorage below */ }
+
+  try{
+    localStorage.setItem(STORE_KEY, payload);
+    savedSomewhere = true;
+  }catch(e){ /* ignore */ }
+
+  document.getElementById('saveStatus').textContent = savedSomewhere
+    ? 'تم الحفظ ✓ (محفوظ في هذا المتصفح/الجهاز)'
+    : 'تعذّر الحفظ التلقائي في هذا المتصفح';
+}
+
+function toggle(code){
+  state[code] = !state[code];
+  if(!state[code]){
+    delete grades[code];
+    delete trainingStage[code];
+  }
+  saveState();
+  render();
+}
+
+function setGrade(code, letter){
+  if(letter){ grades[code] = letter; } else { delete grades[code]; }
+  saveState();
+  updateGpaBadge();
+}
+
+function computeGPA(){
+  let totalPoints = 0, totalHours = 0;
+
+  // Cooperative training is a special case: it spans two consecutive
+  // semesters. While in its first semester the grade is "IP" and doesn't
+  // count. Only once the student is in/through the second semester with an
+  // actual letter grade do the full 6 hours count.
+  if(state[TRAINING_CODE] && trainingStage[TRAINING_CODE]==='sem2' && grades[TRAINING_CODE] && grades[TRAINING_CODE]!=='IP'){
+    const g = GRADES.find(x=>x.letter===grades[TRAINING_CODE]);
+    if(g){ totalPoints += g.points*6; totalHours += 6; }
+  }
+
+  function scan(code, hours){
+    if(code === TRAINING_CODE) return; // handled above
+    if(state[code] && grades[code]){
+      const g = GRADES.find(x=>x.letter===grades[code]);
+      if(g){ totalPoints += g.points*hours; totalHours += hours; }
+    }
+  }
+  REQUIRED.forEach(block=>block.items.forEach(it=>{ if(!it.isPoolRef) scan(it.code, it.hours); }));
+  POOLS.forEach(p=>p.items.forEach(it=>scan(it.code, p.hoursEach)));
+  return {gpa: totalHours>0 ? totalPoints/totalHours : 0, gradedHours: totalHours};
+}
+
+function updateGpaBadge(){
+  const {gpa, gradedHours} = computeGPA();
+  const el = document.getElementById('gpaNum');
+  if(el) el.textContent = gradedHours>0 ? gpa.toFixed(2) : '—';
+}
+
+function gradeSelectHtml(code){
+  return `<select class="grade-select" data-code="${code}">
+    <option value="">تقدير</option>
+    ${GRADES.map(g=>`<option value="${g.letter}" ${grades[code]===g.letter?'selected':''}>${g.letter}</option>`).join('')}
+  </select>`;
+}
+
+function wireGradeSelect(row, code){
+  // Target precisely by data-code — a plain ".grade-select" class query would
+  // also match the training stage selector (which shares the same visual
+  // class), wiring this listener to the wrong <select> and corrupting the
+  // stored grade.
+  const sel = row.querySelector(`select.grade-select[data-code="${code}"]`);
+  if(!sel) return;
+  sel.addEventListener('click', e=>e.stopPropagation());
+  sel.addEventListener('mousedown', e=>e.stopPropagation());
+  sel.addEventListener('change', e=>{
+    e.stopPropagation();
+    setGrade(code, e.target.value);
+    updateGpaBadge();
+  });
+}
+
+function trainingControlsHtml(){
+  const stage = trainingStage[TRAINING_CODE] || '';
+  let html = `<select class="grade-select training-stage-select" data-role="stage">
+    <option value="">اختر الفصل</option>
+    <option value="sem1" ${stage==='sem1'?'selected':''}>الفصل الأول</option>
+    <option value="sem2" ${stage==='sem2'?'selected':''}>الفصل الثاني</option>
+  </select>`;
+  if(stage === 'sem2'){
+    html += gradeSelectHtml(TRAINING_CODE);
+  }
+  return html;
+}
+
+function wireTrainingControls(row){
+  const stageSel = row.querySelector('select[data-role="stage"]');
+  if(stageSel){
+    stageSel.addEventListener('click', e=>e.stopPropagation());
+    stageSel.addEventListener('mousedown', e=>e.stopPropagation());
+    stageSel.addEventListener('change', e=>{
+      e.stopPropagation();
+      trainingStage[TRAINING_CODE] = e.target.value;
+      if(trainingStage[TRAINING_CODE] === 'sem1'){
+        grades[TRAINING_CODE] = 'IP';
+      }else if(trainingStage[TRAINING_CODE] === 'sem2'){
+        if(grades[TRAINING_CODE] === 'IP') delete grades[TRAINING_CODE];
+      }else{
+        delete grades[TRAINING_CODE];
+      }
+      saveState();
+      render();
+    });
+  }
+  // Only wire the real grade dropdown if it's actually present (sem2 stage)
+  if(row.querySelector(`select.grade-select[data-code="${TRAINING_CODE}"]`)){
+    wireGradeSelect(row, TRAINING_CODE);
+  }
+}
+
+function computeHours(){
+  let sum = 0;
+  REQUIRED.forEach(block=>block.items.forEach(it=>{ if(state[it.code]) sum += it.hours; }));
+  POOLS.forEach(p=>p.items.forEach(it=>{ if(state[it.code]) sum += p.hoursEach; }));
+  return sum;
+}
+
+function levelLabel(n){ return ['','الأول','الثاني','الثالث','الرابع'][n]; }
+function semLabel(n){ return n===1 ? 'الفصل الأول' : 'الفصل الثاني'; }
+
+let searchTerm = '';
+let celebrated = false;
+let toastTimer = null;
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+function matchesSearch(name, code){
+  if(!searchTerm) return true;
+  const t = searchTerm.trim().toLowerCase();
+  return name.toLowerCase().includes(t) || (code||'').toLowerCase().includes(t);
+}
+
+function fireConfetti(){
+  const colors = ['#b3872b','#3c6b64','#a8442c','#e8d9b5','#5b8a8a','#d4af37','#7a2e2e'];
+  const emojis = ['🎓','⭐','✨'];
+  const container = document.body;
+
+  function burst(count){
+    for(let i=0;i<count;i++){
+      const useEmoji = Math.random() < 0.12;
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      const left = Math.random()*100;
+      const duration = 2.4 + Math.random()*2.0;
+      const delay = Math.random()*0.5;
+      piece.style.left = left + 'vw';
+      piece.style.animationDuration = duration + 's';
+      piece.style.animationDelay = delay + 's';
+
+      if(useEmoji){
+        piece.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        piece.style.fontSize = (16 + Math.random()*14) + 'px';
+      }else{
+        const isCircle = Math.random() < 0.5;
+        const size = 6 + Math.random()*8;
+        piece.style.width = size + 'px';
+        piece.style.height = (isCircle ? size : size*1.6) + 'px';
+        piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+        piece.style.borderRadius = isCircle ? '50%' : '2px';
+      }
+      container.appendChild(piece);
+      setTimeout(()=>piece.remove(), (duration+delay)*1000 + 300);
+    }
+  }
+
+  burst(70);
+  setTimeout(()=>burst(50), 500);
+  setTimeout(()=>burst(40), 1100);
+
+  document.getElementById('gradOverlay').classList.add('show');
+}
+
+document.getElementById('gradClose').addEventListener('click', ()=>{
+  document.getElementById('gradOverlay').classList.remove('show');
+});
+
+function isBlockDone(block){
+  return block.items.every(it=>{
+    if(it.isPoolRef){
+      const pool = POOLS.find(p=>p.key===it.poolKey);
+      return pool.items.filter(x=>state[x.code]).length >= it.occIndex;
+    }
+    return state[it.code];
+  });
+}
+
+function render(){
+  const doneHours = computeHours();
+  document.getElementById('hoursNum').textContent = doneHours + ' / ' + TOTAL_HOURS;
+  const pct = Math.round((doneHours / TOTAL_HOURS) * 100);
+  document.getElementById('pctNum').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+  const remainingSemesters = REQUIRED.filter(b=>!isBlockDone(b)).length;
+  const trainingDone = !!state['7423500'];
+  document.getElementById('semNum').textContent = remainingSemesters;
+  document.getElementById('semBadge').title = trainingDone ? '' : 'تنبيه: يمتد التدريب الميداني على فصلين دراسيين متتاليين';
+  updateGpaBadge();
+  if(pct >= 100 && !celebrated){
+    celebrated = true;
+    fireConfetti();
+  } else if(pct < 100){
+    celebrated = false;
+  }
+
+  // game board: SVG zigzag path across 8 semester nodes
+  const svg = document.getElementById('boardSvg');
+  svg.innerHTML = '';
+  const n = REQUIRED.length;
+  const stepX = 900 / (n + 1);
+  const points = REQUIRED.map((block, i)=>{
+    const x = 900 - stepX * (i + 1); // RTL: semester 1 on the right
+    const y = 100 + 55 * Math.sin(i * 1.15);
+    return {x, y, block};
+  });
+  // connecting path
+  let pathD = `M ${points[0].x} ${points[0].y}`;
+  for(let i=1;i<points.length;i++){ pathD += ` L ${points[i].x} ${points[i].y}`; }
+  const pathBg = document.createElementNS('http://www.w3.org/2000/svg','path');
+  pathBg.setAttribute('d', pathD);
+  pathBg.setAttribute('class', 'board-path');
+  svg.appendChild(pathBg);
+
+  const lastDoneIdx = (()=>{ let idx=-1; for(let i=0;i<points.length;i++){ if(isBlockDone(points[i].block)) idx=i; else break; } return idx; })();
+  if(lastDoneIdx >= 0){
+    let filledD = `M ${points[0].x} ${points[0].y}`;
+    for(let i=1;i<=lastDoneIdx;i++){ filledD += ` L ${points[i].x} ${points[i].y}`; }
+    const pathFilled = document.createElementNS('http://www.w3.org/2000/svg','path');
+    pathFilled.setAttribute('d', filledD);
+    pathFilled.setAttribute('class', 'board-path filled');
+    svg.appendChild(pathFilled);
+  }
+
+  points.forEach((pt, i)=>{
+    const done = isBlockDone(pt.block);
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('class', 'board-node' + (done ? ' done' : ''));
+    g.onclick = ()=>{ document.getElementById(`sem-${pt.block.level}-${pt.block.sem}`).scrollIntoView({behavior:'smooth', block:'center'}); };
+    const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('class','bg');
+    circle.setAttribute('cx', pt.x); circle.setAttribute('cy', pt.y); circle.setAttribute('r', 20);
+    g.appendChild(circle);
+    const icon = document.createElementNS('http://www.w3.org/2000/svg','text');
+    icon.setAttribute('class','icon');
+    icon.setAttribute('x', pt.x); icon.setAttribute('y', pt.y);
+    icon.textContent = done ? '✓' : (i+1);
+    g.appendChild(icon);
+    const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+    lbl.setAttribute('class','lbl');
+    lbl.setAttribute('x', pt.x); lbl.setAttribute('y', pt.y + 34);
+    lbl.textContent = `م${pt.block.level} ف${pt.block.sem}`;
+    g.appendChild(lbl);
+    svg.appendChild(g);
+  });
+
+  // pools strip
+  const strip = document.getElementById('poolsStrip');
+  strip.innerHTML='';
+  POOLS.forEach(p=>{
+    const count = p.items.filter(it=>state[it.code]).length;
+    const complete = count>=p.need;
+    const chip=document.createElement('div');
+    chip.className='pool-chip '+(complete?'complete':'incomplete');
+    chip.innerHTML = `<div class="count">${count} / ${p.need}</div><div class="name">${p.title}</div>`;
+    chip.onclick=()=>{document.getElementById('pool-'+p.key).scrollIntoView({behavior:'smooth', block:'center'});};
+    strip.appendChild(chip);
+  });
+
+  // levels
+  const lc = document.getElementById('levelsContainer');
+  lc.innerHTML='';
+  let currentLevel = null;
+  REQUIRED.forEach(block=>{
+    if(block.level !== currentLevel){
+      currentLevel = block.level;
+      const st = document.createElement('div');
+      st.className='section-title';
+      st.innerHTML = `<span class="idx">مستوى ${levelLabel(block.level)}</span><h2>المقررات الإجبارية</h2>`;
+      lc.appendChild(st);
+    }
+    const card = document.createElement('div');
+    card.className='card';
+    card.id = `sem-${block.level}-${block.sem}`;
+    const headHours = block.items.reduce((a,b)=>a+b.hours,0);
+    card.innerHTML = `<div class="card-head"><span>${semLabel(block.sem)}</span><span>${headHours} ساعة</span></div>`;
+    block.items.forEach(it=>{
+      const row = document.createElement('div');
+      if(it.isPoolRef){
+        const pool = POOLS.find(p=>p.key===it.poolKey);
+        const count = pool.items.filter(x=>state[x.code]).length;
+        const slotDone = count >= it.occIndex;
+        row.className = 'row poolref-row'+(slotDone?' checked':'');
+        row.onclick = ()=>{document.getElementById('pool-'+pool.key).scrollIntoView({behavior:'smooth', block:'center'});};
+        row.innerHTML = `
+          <div class="chk" style="border-style:dashed;">${slotDone?'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l6 6L20 6"/></svg>':''}</div>
+          <div class="row-name" style="font-style:italic; color:var(--teal);">${it.name} — اختر من القائمة أدناه</div>
+          <div class="row-prereq" style="font-weight:700; color:${slotDone?'var(--teal)':'var(--danger)'};">
+            ${slotDone?'✓ لهذا الفصل':'مطلوب لهذا الفصل'}<br>
+            <span style="font-weight:400; opacity:.75;">إجمالي القائمة: ${count}/${pool.need}</span>
+          </div>
+          <div class="row-code"></div>
+          <div class="row-hours">${it.hours}</div>
+        `;
+        card.appendChild(row);
+        return;
+      }
+      row.className = 'row'+(state[it.code]?' checked':'');
+      row.onclick = ()=>toggle(it.code);
+      const prereqMissing = state[it.code] && it.prereq && !state[it.prereq];
+      const isTraining = it.code === TRAINING_CODE;
+      if(isTraining) row.setAttribute('data-training-row', '1');
+      const trainingIpNote = (isTraining && state[it.code] && trainingStage[TRAINING_CODE]==='sem1')
+        ? `<div class="sem-note" style="color:var(--danger);">الدرجة الآن IP بسبب عدم إكمال التدريب، يجب إكمال فترة التدريب لفصل دراسي آخر للتمكن من اختيار الدرجة المتوقعة</div>` : '';
+      row.innerHTML = `
+        <div class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l6 6L20 6"/></svg></div>
+        <div class="row-name"><span class="name-text">${it.name}</span>${it.trainingNote?'<div class="sem-note">⚠ يمتد التدريب الميداني على فصلين دراسيين متتاليين</div>':''}${trainingIpNote}</div>
+        ${prereqMissing ? `<div class="prereq-warn">⚠ المتطلب السابق (${it.prereq}) غير محدد</div>` : (it.prereq ? `<div class="row-prereq">سابق: ${it.prereq}</div>` : '<div class="row-prereq"></div>')}
+        <div class="row-code">${it.code}</div>
+        <div class="row-hours">${it.hours}</div>
+        ${state[it.code] ? (isTraining ? trainingControlsHtml() : gradeSelectHtml(it.code)) : ''}
+      `;
+      if(!matchesSearch(it.name, it.code)) row.classList.add('hidden-by-search');
+      if(state[it.code]){
+        if(isTraining){ wireTrainingControls(row); } else { wireGradeSelect(row, it.code); }
+      }
+      card.appendChild(row);
+    });
+    lc.appendChild(card);
+  });
+
+  // pools
+  const pc = document.getElementById('poolsContainer');
+  pc.innerHTML='';
+  POOLS.forEach(p=>{
+    const count = p.items.filter(it=>state[it.code]).length;
+    const card = document.createElement('div');
+    card.className='card pool-card';
+    card.id = 'pool-'+p.key;
+    card.innerHTML = `<div class="card-head"><span>${p.title}</span><span class="pool-limit">${count} / ${p.need} — اختر ${p.need} فقط · ${p.hoursEach} ساعات لكل مقرر</span></div>`;
+    p.items.forEach(it=>{
+      const overLimit = !state[it.code] && count>=p.need;
+      const row = document.createElement('div');
+      row.className = 'row'+(state[it.code]?' checked':'')+(overLimit?' locked':'');
+      row.style.opacity = overLimit ? '0.45' : '1';
+      row.style.cursor = overLimit ? 'not-allowed' : 'pointer';
+      row.onclick = ()=>{
+        if(overLimit){
+          showToast(`وصلت الحد الأقصى (${p.need}) من "${p.title}" — أزل تحديد مقرر آخر من نفس القائمة أولاً`);
+          return;
+        }
+        toggle(it.code);
+      };
+      row.innerHTML = `
+        <div class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l6 6L20 6"/></svg></div>
+        <div class="row-name"><span class="name-text">${it.name}</span></div>
+        <div class="row-prereq"></div>
+        <div class="row-code">${it.code}</div>
+        <div class="row-hours">${p.hoursEach}</div>
+        ${state[it.code] ? gradeSelectHtml(it.code) : ''}
+      `;
+      if(!matchesSearch(it.name, it.code)) row.classList.add('hidden-by-search');
+      if(state[it.code]) wireGradeSelect(row, it.code);
+      card.appendChild(row);
+    });
+    pc.appendChild(card);
+  });
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+
+async function generateShareCard(){
+  if(document.fonts && document.fonts.ready){ try{ await document.fonts.ready; }catch(e){} }
+  const canvas = document.createElement('canvas');
+  canvas.width = 1200; canvas.height = 630;
+  const ctx = canvas.getContext('2d');
+  ctx.direction = 'rtl';
+  ctx.textAlign = 'center';
+
+  const bg = ctx.createLinearGradient(0,0,1200,630);
+  bg.addColorStop(0, '#182338');
+  bg.addColorStop(1, '#223252');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,1200,630);
+
+  const glow = ctx.createRadialGradient(1000,80,50,1000,80,520);
+  glow.addColorStop(0, 'rgba(179,135,43,.35)');
+  glow.addColorStop(1, 'rgba(179,135,43,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0,0,1200,630);
+
+  ctx.font = '84px sans-serif';
+  ctx.fillText('🎓', 600, 145);
+
+  ctx.fillStyle = '#f5f2ea';
+  ctx.font = "900 40px Cairo, sans-serif";
+  ctx.fillText('دليل الخطة الدراسية', 600, 220);
+
+  ctx.font = "600 22px 'IBM Plex Sans Arabic', sans-serif";
+  ctx.fillStyle = '#c7cede';
+  ctx.fillText('تخصص اللغة الإنجليزية (اللغويات) · دفعة 2022-2025', 600, 255);
+
+  const doneHours = computeHours();
+  const pct = Math.round((doneHours/TOTAL_HOURS)*100);
+  ctx.font = "900 128px Cairo, sans-serif";
+  ctx.fillStyle = '#e8d9b5';
+  ctx.fillText(pct + '%', 600, 400);
+
+  ctx.font = "600 22px 'IBM Plex Sans Arabic', sans-serif";
+  ctx.fillStyle = '#c7cede';
+  ctx.fillText('من الخطة الدراسية مكتمل', 600, 435);
+
+  const barX = 300, barY = 470, barW = 600, barH = 16;
+  ctx.fillStyle = 'rgba(255,255,255,.15)';
+  roundRect(ctx, barX, barY, barW, barH, 8); ctx.fill();
+  const fillW = Math.max(barH, barW * (pct/100));
+  const barGrad = ctx.createLinearGradient(barX, 0, barX+barW, 0);
+  barGrad.addColorStop(0, '#3c6b64');
+  barGrad.addColorStop(1, '#b3872b');
+  ctx.fillStyle = barGrad;
+  roundRect(ctx, barX, barY, fillW, barH, 8); ctx.fill();
+
+  ctx.font = "700 24px Cairo, sans-serif";
+  ctx.fillStyle = '#f5f2ea';
+  const remainingSemesters = REQUIRED.filter(b=>!isBlockDone(b)).length;
+  ctx.fillText(`${doneHours} / ${TOTAL_HOURS} ساعة`, 420, 550);
+  ctx.fillText(`${remainingSemesters} فصل متبقي`, 780, 550);
+
+  return canvas;
+}
+
+function generateAdvisorMessage(){
+  const doneHours = computeHours();
+  const pct = Math.round((doneHours/TOTAL_HOURS)*100);
+  const lines = [];
+  lines.push('السلام عليكم دكتور،');
+  lines.push('');
+  lines.push(`أرسل لكم حالة تقدمي الدراسي (${doneHours} من ${TOTAL_HOURS} ساعة - ${pct}%):`);
+  lines.push('');
+
+  const missingRequired = [];
+  REQUIRED.forEach(block=>block.items.forEach(it=>{
+    if(!it.isPoolRef && !state[it.code]) missingRequired.push(`- ${it.name} (${it.code})`);
+  }));
+  if(missingRequired.length){
+    lines.push('المقررات الإجبارية المتبقية:');
+    lines.push(...missingRequired);
+    lines.push('');
+  }
+
+  const poolGaps = [];
+  POOLS.forEach(p=>{
+    const count = p.items.filter(it=>state[it.code]).length;
+    if(count < p.need) poolGaps.push(`- ${p.title}: باقي ${p.need - count} من ${p.need}`);
+  });
+  if(poolGaps.length){
+    lines.push('المتطلبات الاختيارية الناقصة:');
+    lines.push(...poolGaps);
+    lines.push('');
+  }
+
+  if(!missingRequired.length && !poolGaps.length){
+    lines.push('الحمد لله أنجزت كل متطلبات الخطة (137 ساعة). 🎓');
+    lines.push('');
+  }
+
+  lines.push('أرجو تزويدي بأي ملاحظات. شاكرة/شاكر لكم.');
+  return lines.join('\n');
+}
+
+document.getElementById('shareBtn').addEventListener('click', async ()=>{
+  const canvas = await generateShareCard();
+  document.getElementById('sharePreviewImg').src = canvas.toDataURL('image/png');
+  document.getElementById('shareOverlay').classList.add('show');
+});
+document.getElementById('closeShareBtn').addEventListener('click', ()=>{
+  document.getElementById('shareOverlay').classList.remove('show');
+});
+document.getElementById('downloadShareBtn').addEventListener('click', ()=>{
+  const a = document.createElement('a');
+  a.href = document.getElementById('sharePreviewImg').src;
+  a.download = 'تقدمي-الدراسي.png';
+  a.click();
+});
+
+document.getElementById('advisorBtn').addEventListener('click', ()=>{
+  document.getElementById('advisorText').value = generateAdvisorMessage();
+  document.getElementById('advisorOverlay').classList.add('show');
+});
+document.getElementById('closeAdvisorBtn').addEventListener('click', ()=>{
+  document.getElementById('advisorOverlay').classList.remove('show');
+});
+
+document.getElementById('copyAdvisorBtn').addEventListener('click', async ()=>{
+  const text = document.getElementById('advisorText').value;
+  const btn = document.getElementById('copyAdvisorBtn');
+  const orig = btn.textContent;
+  try{
+    await navigator.clipboard.writeText(text);
+    btn.textContent = '✓ تم النسخ';
+  }catch(e){
+    const ta = document.getElementById('advisorText');
+    ta.select();
+    try{ document.execCommand('copy'); btn.textContent = '✓ تم النسخ'; }catch(e2){ btn.textContent = 'تعذر النسخ'; }
+  }
+  setTimeout(()=>btn.textContent = orig, 1500);
+});
+document.getElementById('waAdvisorBtn').addEventListener('click', ()=>{
+  const text = document.getElementById('advisorText').value;
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+});
+
+function buildPrintView(){
+  const doneHours = computeHours();
+  const pct = Math.round((doneHours/TOTAL_HOURS)*100);
+
+  function prow(name, code, hours, done){
+    return `<div class="p-row">
+      <div class="p-box ${done?'done':''}">${done?'✓':''}</div>
+      <div class="p-name ${done?'done-text':''}">${name}</div>
+      <div class="p-code">${code}</div>
+      <div class="p-hours">${hours}</div>
+    </div>`;
+  }
+
+  let sectionsHtml = '';
+  REQUIRED.forEach(block=>{
+    const headHours = block.items.reduce((a,b)=>a+b.hours,0);
+    let rows = '';
+    block.items.forEach(it=>{
+      if(it.isPoolRef){
+        const pool = POOLS.find(p=>p.key===it.poolKey);
+        const c = pool.items.filter(x=>state[x.code]).length;
+        rows += prow(`${it.name} (إجمالي القائمة: ${c}/${pool.need} — انظر القوائم أدناه)`, '—', it.hours, c>=it.occIndex);
+      }else{
+        rows += prow(it.name, it.code, it.hours, !!state[it.code]);
+      }
+    });
+    sectionsHtml += `<div class="p-card">
+      <div class="p-cardhead"><span>المستوى ${levelLabel(block.level)} — ${semLabel(block.sem)}</span><span>${headHours} ساعة</span></div>
+      ${rows}
+    </div>`;
+  });
+
+  let poolsHtml = '';
+  POOLS.forEach(p=>{
+    const count = p.items.filter(it=>state[it.code]).length;
+    let rows = '';
+    p.items.forEach(it=>{ rows += prow(it.name, it.code, p.hoursEach, !!state[it.code]); });
+    poolsHtml += `<div class="p-card">
+      <div class="p-cardhead pool"><span>${p.title}</span><span>${count} / ${p.need} محدد</span></div>
+      ${rows}
+    </div>`;
+  });
+
+  document.getElementById('printView').innerHTML = `
+    <div class="p-header">
+      <p class="p-eyebrow">جامعة الملك فيصل — كلية الآداب · دفعة 2022 - 2025</p>
+      <h1>دليل الخطة الدراسية للطالبـ/ـة - تخصص اللغة الإنجليزية - دفعة 2022-2025</h1>
+      <p class="p-sub">نسخة مطبوعة بوضع الطالب الفعلي بتاريخ ${new Date().toLocaleDateString('ar-SA')}</p>
+      <p class="p-stats">${doneHours} / ${TOTAL_HOURS} ساعة مكتملة (${pct}%)</p>
+    </div>
+    <div class="p-section">المقررات الإجبارية</div>
+    <div class="p-cols">${sectionsHtml}</div>
+    <div class="p-section">المتطلبات الاختيارية (القوائم الأربع)</div>
+    ${poolsHtml}
+  `;
+}
+
+document.getElementById('exportPdfBtn').addEventListener('click', ()=>{
+  buildPrintView();
+  setTimeout(()=>window.print(), 60);
+});
+
+document.getElementById('resetBtn').onclick = ()=>{
+  if(confirm('سيتم مسح كل المقررات المحددة. متابعة؟')){
+    state = {};
+    grades = {};
+    saveState();
+    render();
+  }
+};
+
+document.getElementById('searchBox').addEventListener('input', (e)=>{
+  searchTerm = e.target.value;
+  render();
+});
+
+loadState();
+</script>
+</body>
+</html>
